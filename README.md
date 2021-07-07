@@ -14,14 +14,14 @@ Workflow will perform below action
 3. Build application 
 4. Store "build" directory as artifacts
 
-**JOB: Dockerize application **
+**JOB: Dockerize application**
 1. Download artifacts
 2. Run hadolint on Dockerfile
 3. Build dockerfile 
 4. Push docker image to dockerhub repository 
 
-_Terraform readme included in "terraform" directory 
-_
+_Terraform readme included in "terraform" directory_
+
 Final application page:
 
 <img width="586" alt="image" src="https://user-images.githubusercontent.com/22025054/124763764-f161de00-df51-11eb-9337-06140a1c2ed7.png">
