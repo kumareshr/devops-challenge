@@ -1,8 +1,6 @@
 ## How to deploy the cluster in AWS
 
-1) Create an IAM user and update the file **terraform.tfvars** with the credentials. To create an IAM user follow the step 1 of the  link below.
-
-https://medium.com/@gmusumeci/how-to-create-an-iam-account-and-configure-terraform-to-use-aws-static-credentials-a8ea4dd4fdfc
+1) Create an IAM user and update the file **terraform.tfvars** with the credentials. 
 
 2) Update the Amazon ECS ARN and resource ID settings
 
