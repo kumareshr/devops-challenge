@@ -1,0 +1,65 @@
+name: node-app
+
+on:
+  push:
+    branches: [ "*", "*/*" ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-package:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x]
+    steps:
+      - uses: actions/checkout@v2
+      - name: build and test with ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: yarn install
+      - run: yarn test --watchAll=false
+      - run: yarn build 
+      - run: rm -rf node_modules
+      - name: Upload build artifacts for futures jobs
+        uses: actions/upload-artifact@v2
+        with:
+          name: packages
+          path: build
+
+  build-dockerfile:  
+    needs: build-package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Download build artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: packages
+          path: build
+      - run: pwd
+      - run: tree *
+      - name: Run hadolint on docker file 
+        uses: hadolint/hadolint-action@v1.5.0
+        with:
+          dockerfile: Dockerfile
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to DockerHub
+        uses: docker/login-action@v1 
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          context: .
+          tags: kumareshr007/devops:latest
+      -  name: Image digest
+         run: echo ${{ steps.docker_build.outputs.digest }}
+
